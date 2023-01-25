@@ -17,10 +17,7 @@ public class Validator implements Producer {
     }
 
     private String validate(JsonNode root, String path){
-        if(!root.has(path)){
-            return path.concat(" is missing. ");
-        }
-        JsonNode node = root.path(path);
+        JsonNode node = root.at(path);
         if(node.isMissingNode()){
             return path.concat(" is missing. ");
         }
@@ -33,10 +30,15 @@ public class Validator implements Producer {
         try{
             JsonNode root=MAPPER.readTree(message);
             String error="";
-            error = error.concat(validate(root,"event"));
-            error = error.concat(validate(root,"customer"));
-            error = error.concat(validate(root,"currency"));
-            error = error.concat(validate(root,"timestamp"));
+            error = error.concat(validate(root,"/event"));
+            error = error.concat(validate(root,"/customer"));
+            error = error.concat(validate(root,"/currency"));
+            error = error.concat(validate(root,"/timestamp"));
+            error = error.concat(validate(root,"/customer/id"));
+            error = error.concat(validate(root,"/customer/name"));
+            error = error.concat(validate(root,"/customer/ipAddress"));
+            error = error.concat(validate(root,"/currency/name"));
+            error = error.concat(validate(root,"/currency/price"));
 
             if(error.length()>0){
                 String value = "{\"error\":\""+error+"\"}";
